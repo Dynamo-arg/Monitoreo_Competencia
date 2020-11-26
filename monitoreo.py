@@ -11,7 +11,6 @@ y generar un archivo “csv”.
 Filtra y analizar la información e informa
 la diferencia de precios entre la Cuenta principal 
 y 3 competidores previamente asignados.
-
 '''
 
 __author__ = "Sebastian Volpe"
@@ -32,9 +31,9 @@ def numero_entero():
             print("ATENCIÓN: Debe ingresar un número entero.")
 
 def minusculas():
-    palabra_clave = str(input("Ingrese el producto a monitorear\n"))
-    palabra_clave = palabra_clave.lower()
-    return palabra_clave
+    clave = str(input("Ingrese el producto a monitorear\n"))
+    clave = clave.lower()
+    return clave
 
 def monitoreo():
     with open("monitoreo_origen.csv") as csvfile:
@@ -87,36 +86,46 @@ def monitoreo():
             break
         else:
             print("Error Vuelva a ingresar")
+        
 
-            
+    # Empiezo con las comparaciones
+    # Creo un diccionario para organizar y almacenar
 
-    # Empiezo con las comparaciones la primera con un solo competidor
-    # y la segunda con todos si el usuario lo elige
-    comparaciones_salida = {}
+    comparaciones_salida = {
+        "cuenta principal":str,
+        "competidor":str,
+        "titulo":str,
+        "precio":int,
+        "diferencia precio":int,
+        "cantidad vendida":int,
+        "diferencia cantidad":int,
+        }
     fo = open('salida.csv', 'w', newline='')
-    comparaciones_salida["Cuenta Principal"] = cuenta_principal
-    comparaciones_salida["Competidor"] = competidor
     writer = csv.DictWriter(fo, fieldnames=comparaciones_salida)
     writer.writeheader()
     print(comparaciones_salida)
-    fo.close()
-    #except:
-     #   comparaciones_salida["Cuenta Principal:"] = cuenta_principal
-      #  comparaciones_salida["Competidor: 1:"] = usuarios[0]
-       # comparaciones_salida["Competidor: 2:"] = usuarios[1]
-       # comparaciones_salida["Competidor: 3:"] = usuarios[2]
-       # print(comparaciones_salida)
+
+    # Creo un Try para la comparacion de un solo competidor
+    # Si el usuario eligio Todos, no se creo una varibale COMPETIDOR
+    # Por lo tanto intenta Except
+    try:
+        palabra_clave = minusculas()
+        print(palabra_clave)
+        for i in range(cantidad_filas):
+            row = data[i]
+            titulo = str(row.get("titulo"))
+            titulo = titulo.lower()
+            if palabra_clave in titulo:
+                writer.writerow({
+                    'titulo':titulo
+                    })
+        fo.close()
+
+    except:
+        fo.close()
 
 
-    
-    palabra_clave = minusculas()
-    print(palabra_clave)
-    for i in range(cantidad_filas):
-        row = data[i]
-        titulo = str(row.get("titulo"))
-        titulo = titulo.lower()
-        if palabra_clave in titulo:
-            print("Coincidencia")
+
         
 
 

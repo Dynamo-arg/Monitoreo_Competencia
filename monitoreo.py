@@ -92,8 +92,7 @@ def monitoreo():
     # Creo un diccionario para organizar y almacenar
 
     comparaciones_salida = {
-        "cuenta principal":str,
-        "competidor":str,
+        "nombre cuenta":str,
         "titulo":str,
         "precio":int,
         "diferencia precio":int,
@@ -115,13 +114,38 @@ def monitoreo():
             row = data[i]
             titulo = str(row.get("titulo"))
             titulo = titulo.lower()
-            if palabra_clave in titulo:
+            precio = int(row.get("precio"))
+            cuenta = str(row.get("nick"))
+            vendidas = int(row.get("cantidad"))
+            if (palabra_clave in titulo) and (cuenta == cuenta_principal):
                 writer.writerow({
-                    'titulo':titulo
+                    "nombre cuenta": cuenta,
+                    "titulo": titulo,
+                    "precio": precio,
+                    "cantidad vendida": vendidas,
+                    })
+                precio_comparar = precio
+                cantidad_comparar = vendidas
+        for i in range(cantidad_filas):
+            row = data[i]
+            titulo = str(row.get("titulo"))
+            titulo = titulo.lower()
+            precio = int(row.get("precio"))
+            cuenta = str(row.get("nick"))
+            vendidas = int(row.get("cantidad"))
+            if (palabra_clave in titulo) and (cuenta == competidor):
+                    writer.writerow({
+                    "nombre cuenta": cuenta,
+                    "titulo": titulo,
+                    "precio": precio,
+                    "cantidad vendida": vendidas,
+                    "diferencia cantidad": vendidas - cantidad_comparar,
+                    "diferencia precio": precio - precio_comparar,
                     })
         fo.close()
 
     except:
+        print("ERROR")
         fo.close()
 
 

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+import csv
+import re
+
 '''
 Proyecto integrador
 Monitoreo de la competencia en Mercado libre
@@ -17,8 +20,6 @@ __author__ = "Sebastian Volpe"
 __email__ = "compras@bari.com.ar"
 __version__ = "1.00"
 
-import csv
-import re
 
 # Creo funciones que voy a usar mas de una vez para simplificar:
 def numero_entero():
@@ -30,10 +31,12 @@ def numero_entero():
         except ValueError:
             print("ATENCIÓN: Debe ingresar un número entero.")
 
+
 def minusculas():
     clave = str(input("Ingrese el producto a monitorear\n"))
     clave = clave.lower()
     return clave
+
 
 def monitoreo():
     with open("monitoreo_origen.csv") as csvfile:
@@ -102,30 +105,28 @@ def monitoreo():
     fo = open('salida.csv', 'w', newline='')
     writer = csv.DictWriter(fo, fieldnames=comparaciones_salida)
     writer.writeheader()
-    print(comparaciones_salida)
-
+ 
+    palabra_clave = minusculas()
+    for i in range(cantidad_filas):
+        row = data[i]
+        titulo = str(row.get("titulo"))
+        titulo = titulo.lower()
+        precio = int(row.get("precio"))
+        cuenta = str(row.get("nick"))
+        vendidas = int(row.get("cantidad"))
+        if (palabra_clave in titulo) and (cuenta == cuenta_principal):
+            writer.writerow({
+                "nombre cuenta": cuenta,
+                "titulo": titulo,
+                "precio": precio,
+                "cantidad vendida": vendidas,
+                })
+            precio_comparar = precio
+            cantidad_comparar = vendidas
     # Creo un Try para la comparacion de un solo competidor
     # Si el usuario eligio Todos, no se creo una varibale COMPETIDOR
     # Por lo tanto intenta Except
-    try:
-        palabra_clave = minusculas()
-        print(palabra_clave)
-        for i in range(cantidad_filas):
-            row = data[i]
-            titulo = str(row.get("titulo"))
-            titulo = titulo.lower()
-            precio = int(row.get("precio"))
-            cuenta = str(row.get("nick"))
-            vendidas = int(row.get("cantidad"))
-            if (palabra_clave in titulo) and (cuenta == cuenta_principal):
-                writer.writerow({
-                    "nombre cuenta": cuenta,
-                    "titulo": titulo,
-                    "precio": precio,
-                    "cantidad vendida": vendidas,
-                    })
-                precio_comparar = precio
-                cantidad_comparar = vendidas
+    try:    
         for i in range(cantidad_filas):
             row = data[i]
             titulo = str(row.get("titulo"))
@@ -143,12 +144,28 @@ def monitoreo():
                     "diferencia precio": precio - precio_comparar,
                     })
         fo.close()
-
     except:
         print("ERROR")
+        for i in range(cantidad_filas):
+            row = data[i]
+            titulo = str(row.get("titulo"))
+            titulo = titulo.lower()
+            precio = int(row.get("precio"))
+            cuenta = str(row.get("nick"))
+            vendidas = int(row.get("cantidad"))
+            if palabra_clave in titulo:
+                    writer.writerow({
+                    "nombre cuenta": cuenta,
+                    "titulo": titulo,
+                    "precio": precio,
+                    "cantidad vendida": vendidas,
+                    "diferencia cantidad": vendidas - cantidad_comparar,
+                    "diferencia precio": precio - precio_comparar,
+                    })
         fo.close()
 
 
+    
 
         
 

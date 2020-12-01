@@ -46,7 +46,6 @@ def monitoreo():
     usuarios = []
     usuarios.append(data[0].get("nick"))
     cantidad_filas = len(data)
-
     for i in range(cantidad_filas):
         row = data[i]
         comparar = str(row.get("nick"))
@@ -56,13 +55,16 @@ def monitoreo():
     # Creo un Bucle para obtener el usuario principal
     # Y lo borro de la lista para continuar
     while True: 
-        print("Listas de usuarios disponibles:")
-        print("1 - ",usuarios[0])
-        print("2 - ",usuarios[1])
-        print("3 - ",usuarios[2])
-        print("4 - ",usuarios[3])
-        print("Ingrese el usuario de la cuenta principal:")
+        print(
+            "\nListas de usuarios disponibles:\n"
+            "1 - ",usuarios[0],"\n"
+            "2 - ",usuarios[1],"\n"
+            "3 - ",usuarios[2],"\n"
+            "4 - ",usuarios[3],"\n"
+            "Ingrese el usuario de la cuenta principal:"
+            )
         opcion = numero_entero()
+
         try:
             if opcion < 4:
                 cuenta_principal = usuarios[opcion-1]
@@ -76,11 +78,13 @@ def monitoreo():
     # Creo la opcion para elegir si comparamos con 
     # 1 competidor o con todos
     while True:    
-        print("ingrese que competidor desea monitorear:")
-        print("1 - ",usuarios[0])
-        print("2 - ",usuarios[1])
-        print("3 - ",usuarios[2])
-        print("4 -  Todos")
+        print(
+            "\ningrese que competidor desea monitorear:\n"
+            "1 - ",usuarios[0],"\n"
+            "2 - ",usuarios[1],"\n"
+            "3 - ",usuarios[2],"\n"
+            "4 -  Todos"
+            )
         opcion = numero_entero()
         if opcion < 4:
             competidor = usuarios[opcion-1]
@@ -96,6 +100,7 @@ def monitoreo():
 
     comparaciones_salida = {
         "nombre cuenta":str,
+        "nombre competidor":str,
         "titulo":str,
         "precio":int,
         "diferencia precio":int,
@@ -136,7 +141,7 @@ def monitoreo():
             vendidas = int(row.get("cantidad"))
             if (palabra_clave in titulo) and (cuenta == competidor):
                     writer.writerow({
-                    "nombre cuenta": cuenta,
+                    "nombre competidor": cuenta,
                     "titulo": titulo,
                     "precio": precio,
                     "cantidad vendida": vendidas,
@@ -153,9 +158,9 @@ def monitoreo():
             precio = int(row.get("precio"))
             cuenta = str(row.get("nick"))
             vendidas = int(row.get("cantidad"))
-            if palabra_clave in titulo:
+            if (palabra_clave in titulo) and (cuenta != cuenta_principal):
                     writer.writerow({
-                    "nombre cuenta": cuenta,
+                    "nombre competidor": cuenta,
                     "titulo": titulo,
                     "precio": precio,
                     "cantidad vendida": vendidas,
@@ -163,6 +168,14 @@ def monitoreo():
                     "diferencia precio": precio - precio_comparar,
                     })
         fo.close()
+    print("Archivo generado y Almacenado como ", fo.name)
+    print(
+        "\nEliga algunas de estas opciones:\n"
+        "1 - Ver resultados por consola\n"
+        "2 - Volver a generar el Archivo\n"
+        "3 - Salir"
+        )
+    bucle = numero_entero()
 
 
     

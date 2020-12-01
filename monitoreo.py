@@ -54,7 +54,8 @@ def monitoreo():
 
     # Creo un Bucle para obtener el usuario principal
     # Y lo borro de la lista para continuar
-    while True: 
+    bucle = 2
+    while bucle == 2: 
         print(
             "\nListas de usuarios disponibles:\n"
             "1 - ",usuarios[0],"\n"
@@ -65,117 +66,126 @@ def monitoreo():
             )
         opcion = numero_entero()
 
-        try:
+        if opcion < 4:
+            cuenta_principal = usuarios[opcion-1]
+            usuarios.remove(cuenta_principal)
+        else:
+            print("ERROR VUELVA A INGRESAR")
+            
+
+        # Creo la opcion para elegir si comparamos con 
+        # 1 competidor o con todos
+        while True:    
+            print(
+                "\ningrese que competidor desea monitorear:\n"
+                "1 - ",usuarios[0],"\n"
+                "2 - ",usuarios[1],"\n"
+                "3 - ",usuarios[2],"\n"
+                "4 -  Todos"
+                )
+            opcion = numero_entero()
             if opcion < 4:
-                cuenta_principal = usuarios[opcion-1]
-                usuarios.remove(cuenta_principal)
+                competidor = usuarios[opcion-1]
+                break
+            elif opcion == 4:
                 break
             else:
-                print("Error vuelva a ingresar")
+                print("Error Vuelva a ingresar")
+            
+
+        # Empiezo con las comparaciones
+        # Creo un diccionario para organizar y almacenar
+
+        comparaciones_salida = {
+            "nombre cuenta":str,
+            "nombre competidor":str,
+            "titulo":str,
+            "precio":int,
+            "diferencia precio":int,
+            "cantidad vendida":int,
+            "diferencia cantidad":int,
+            }
+        fo = open('salida.csv', 'w', newline='')
+        writer = csv.DictWriter(fo, fieldnames=comparaciones_salida)
+        writer.writeheader()
+    
+        palabra_clave = minusculas()
+        for i in range(cantidad_filas):
+            row = data[i]
+            titulo = str(row.get("titulo"))
+            titulo = titulo.lower()
+            precio = int(row.get("precio"))
+            cuenta = str(row.get("nick"))
+            vendidas = int(row.get("cantidad"))
+            if (palabra_clave in titulo) and (cuenta == cuenta_principal):
+                writer.writerow({
+                    "nombre cuenta": cuenta,
+                    "titulo": titulo,
+                    "precio": precio,
+                    "cantidad vendida": vendidas,
+                    })
+                precio_comparar = precio
+                cantidad_comparar = vendidas
+        # Creo un Try para la comparacion de un solo competidor
+        # Si el usuario eligio Todos, no se creo una varibale COMPETIDOR
+        # Por lo tanto intenta Except
+        try:    
+            for i in range(cantidad_filas):
+                row = data[i]
+                titulo = str(row.get("titulo"))
+                titulo = titulo.lower()
+                precio = int(row.get("precio"))
+                cuenta = str(row.get("nick"))
+                vendidas = int(row.get("cantidad"))
+                if (palabra_clave in titulo) and (cuenta == competidor):
+                        writer.writerow({
+                        "nombre competidor": cuenta,
+                        "titulo": titulo,
+                        "precio": precio,
+                        "cantidad vendida": vendidas,
+                        "diferencia cantidad": vendidas - cantidad_comparar,
+                        "diferencia precio": precio - precio_comparar,
+                        })
+            fo.close()
         except:
-            print("Error vuelva a ingresar")
-
-    # Creo la opcion para elegir si comparamos con 
-    # 1 competidor o con todos
-    while True:    
+            print("ERROR")
+            for i in range(cantidad_filas):
+                row = data[i]
+                titulo = str(row.get("titulo"))
+                titulo = titulo.lower()
+                precio = int(row.get("precio"))
+                cuenta = str(row.get("nick"))
+                vendidas = int(row.get("cantidad"))
+                if (palabra_clave in titulo) and (cuenta != cuenta_principal):
+                        writer.writerow({
+                        "nombre competidor": cuenta,
+                        "titulo": titulo,
+                        "precio": precio,
+                        "cantidad vendida": vendidas,
+                        "diferencia cantidad": vendidas - cantidad_comparar,
+                        "diferencia precio": precio - precio_comparar,
+                        })
+            fo.close()
+        print("Archivo generado y Almacenado como ", fo.name)
         print(
-            "\ningrese que competidor desea monitorear:\n"
-            "1 - ",usuarios[0],"\n"
-            "2 - ",usuarios[1],"\n"
-            "3 - ",usuarios[2],"\n"
-            "4 -  Todos"
-            )
-        opcion = numero_entero()
-        if opcion < 4:
-            competidor = usuarios[opcion-1]
-            break
-        elif opcion == 4:
-            break
-        else:
-            print("Error Vuelva a ingresar")
-        
+          "Eliga algunas de estas opciones:\n"
+          "1 - Ver resultados por consola\n"
+          "2 - Volver a generar el Archivo\n"
+          "3 - Salir"
+          )
+        bucle = numero_entero()
+        if bucle == 2:
+            usuarios.append(cuenta_principal)
+        elif bucle == 1:
+            with open('salida.csv') as csvfile:
+                data = list(csv.DictReader(csvfile))
+## ACA            filas = len(data)
+            for i in range(cantidad_filas):
+                row = data[i]
+                print('Cuenta Principal:', row.get('nombre cuenta'))
+                print('Competidor:', row.get('nombre competidor'))
 
-    # Empiezo con las comparaciones
-    # Creo un diccionario para organizar y almacenar
 
-    comparaciones_salida = {
-        "nombre cuenta":str,
-        "nombre competidor":str,
-        "titulo":str,
-        "precio":int,
-        "diferencia precio":int,
-        "cantidad vendida":int,
-        "diferencia cantidad":int,
-        }
-    fo = open('salida.csv', 'w', newline='')
-    writer = csv.DictWriter(fo, fieldnames=comparaciones_salida)
-    writer.writeheader()
- 
-    palabra_clave = minusculas()
-    for i in range(cantidad_filas):
-        row = data[i]
-        titulo = str(row.get("titulo"))
-        titulo = titulo.lower()
-        precio = int(row.get("precio"))
-        cuenta = str(row.get("nick"))
-        vendidas = int(row.get("cantidad"))
-        if (palabra_clave in titulo) and (cuenta == cuenta_principal):
-            writer.writerow({
-                "nombre cuenta": cuenta,
-                "titulo": titulo,
-                "precio": precio,
-                "cantidad vendida": vendidas,
-                })
-            precio_comparar = precio
-            cantidad_comparar = vendidas
-    # Creo un Try para la comparacion de un solo competidor
-    # Si el usuario eligio Todos, no se creo una varibale COMPETIDOR
-    # Por lo tanto intenta Except
-    try:    
-        for i in range(cantidad_filas):
-            row = data[i]
-            titulo = str(row.get("titulo"))
-            titulo = titulo.lower()
-            precio = int(row.get("precio"))
-            cuenta = str(row.get("nick"))
-            vendidas = int(row.get("cantidad"))
-            if (palabra_clave in titulo) and (cuenta == competidor):
-                    writer.writerow({
-                    "nombre competidor": cuenta,
-                    "titulo": titulo,
-                    "precio": precio,
-                    "cantidad vendida": vendidas,
-                    "diferencia cantidad": vendidas - cantidad_comparar,
-                    "diferencia precio": precio - precio_comparar,
-                    })
-        fo.close()
-    except:
-        print("ERROR")
-        for i in range(cantidad_filas):
-            row = data[i]
-            titulo = str(row.get("titulo"))
-            titulo = titulo.lower()
-            precio = int(row.get("precio"))
-            cuenta = str(row.get("nick"))
-            vendidas = int(row.get("cantidad"))
-            if (palabra_clave in titulo) and (cuenta != cuenta_principal):
-                    writer.writerow({
-                    "nombre competidor": cuenta,
-                    "titulo": titulo,
-                    "precio": precio,
-                    "cantidad vendida": vendidas,
-                    "diferencia cantidad": vendidas - cantidad_comparar,
-                    "diferencia precio": precio - precio_comparar,
-                    })
-        fo.close()
-    print("Archivo generado y Almacenado como ", fo.name)
-    print(
-        "\nEliga algunas de estas opciones:\n"
-        "1 - Ver resultados por consola\n"
-        "2 - Volver a generar el Archivo\n"
-        "3 - Salir"
-        )
-    bucle = numero_entero()
 
 
     

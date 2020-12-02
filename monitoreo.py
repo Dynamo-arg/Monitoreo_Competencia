@@ -9,9 +9,9 @@ Autor: Sebastian Volpe
 Version: 1.00
 Descripcion:
 Programa que se utiliza para monitorear a la competencia en MercadoLibre
-y generar un archivo csv 
+generar un archivo csv 
 Filtra y analizar la información e informa
-la diferencia de precios entre la Cuenta principal 
+la diferencia de precios entre la Cuenta principal
 y 3 competidores previamente asignados
 '''
 
@@ -54,7 +54,7 @@ def monitoreo():
     # Creo un Bucle para obtener el usuario principal
     # Y lo borro de la lista para continuar
     bucle = 1
-    while bucle == 1: 
+    while bucle == 1:
         print(
             "\nListas de usuarios disponibles:\n"
             "1 - ", usuarios[0], "\n"
@@ -70,11 +70,9 @@ def monitoreo():
             usuarios.remove(cuenta_principal)
         else:
             print("ERROR VUELVA A INGRESAR")
-            
-
-        # Creo la opcion para elegir si comparamos con 
+        # Creo la opcion para elegir si comparamos con
         # 1 competidor o con todos
-        while True:    
+        while True:
             print(
                 "\ningrese que competidor desea monitorear:\n"
                 "1 - ", usuarios[0], "\n"
@@ -90,8 +88,6 @@ def monitoreo():
                 break
             else:
                 print("Error Vuelva a ingresar")
-            
-
         # Empiezo con las comparaciones
         # Creo un diccionario para organizar y almacenar
 
@@ -107,7 +103,6 @@ def monitoreo():
         fo = open('salida.csv', 'w', newline='')
         writer = csv.DictWriter(fo, fieldnames=comparaciones_salida)
         writer.writeheader()
-    
         palabra_clave = minusculas()
         error = 0
         for i in range(cantidad_filas):
@@ -128,11 +123,10 @@ def monitoreo():
                 cantidad_comparar = vendidas
                 error += 1
 
-
         # Creo un Try para la comparacion de un solo competidor
         # Si el usuario eligio Todos, no se creo una varibale COMPETIDOR
         # Por lo tanto intenta Except
-        try:    
+        try:
             for i in range(cantidad_filas):
                 row = data[i]
                 titulo = str(row.get("titulo"))
@@ -141,14 +135,14 @@ def monitoreo():
                 cuenta = str(row.get("nick"))
                 vendidas = int(row.get("cantidad"))
                 if (palabra_clave in titulo) and (cuenta == competidor):
-                        writer.writerow({
-                        "nombre competidor": cuenta,
-                        "titulo": titulo,
-                        "precio": precio,
-                        "cantidad vendida": vendidas,
-                        "diferencia cantidad": vendidas - cantidad_comparar,
-                        "diferencia precio": precio - precio_comparar,
-                        })
+                        writer.writerow({  
+                            "nombre competidor": cuenta,
+                            "titulo": titulo,
+                            "precio": precio,
+                            "cantidad vendida": vendidas,
+                            "diferencia cantidad": vendidas - cantidad_comparar,
+                            "diferencia precio": precio - precio_comparar,
+                            })
             fo.close()
         except:
             print("ERROR")
@@ -180,16 +174,14 @@ def monitoreo():
                 usuarios.append(cuenta_principal)
             else:
                 break
-
-            
         else:
             print("Archivo generado y Almacenado como ", fo.name)
             print(
-            "Eliga algunas de estas opciones:\n"
-            "1 - Volver a generar el Archivo\n"
-            "2 - Ver resultados por consola\n"
-            "3 - Salir"
-            )
+                "Eliga algunas de estas opciones:\n"
+                "1 - Volver a generar el Archivo\n"
+                "2 - Ver resultados por consola\n"
+                "3 - Salir"
+                )
             bucle = numero_entero()
             if bucle == 1:
                 usuarios.append(cuenta_principal)
@@ -208,11 +200,8 @@ def monitoreo():
                         'Vendidas:', row.get('cantidad vendida'),
                         'Cantidad Vendidas:', row.get('diferencia cantidad')
                     )
-                    
             else:
                 break
                      
-  
-
 if __name__ == '__main__':
     monitoreo()
